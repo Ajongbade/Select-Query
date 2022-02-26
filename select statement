@@ -1,0 +1,16 @@
+select a.month_id, c.fiscal_month, revenue_2021, targets_2021 from 
+	(select month_id, sum(revenue) as revenue_2021 from revenue_raw_data  
+	where Month_ID in ( select distinct Month_ID from calendar_lookup where fiscal_year = 'fy21'
+	) group by month_id) a
+
+	left join
+
+	(select month_id, sum(target) as targets_2021 from targets_raw_data  
+	where Month_ID in ( select distinct Month_ID from calendar_lookup where fiscal_year = 'fy21'
+	) group by month_id) b
+
+	on a.month_id = b.month_id 
+    
+    left join 
+    ( select distinct month_id, fiscal_month from calendar_lookup) c
+    on c.month_id = b.month_id
